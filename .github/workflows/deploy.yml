@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: SSH into server & deploy
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -15,5 +15,5 @@ jobs:
           script: |
             cd /home/ubuntu/hng12-stage2-fastapi-book-project
             git pull origin main
-            pip install -r requirements.txt
-            systemctl restart fastapi.service
+            pip3 install -r requirements.txt  # Use pip3
+            sudo systemctl restart fastapi.service  # Add sudo
