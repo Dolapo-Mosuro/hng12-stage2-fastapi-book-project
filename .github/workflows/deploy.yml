@@ -24,12 +24,14 @@ jobs:
             set -e
             echo "=== Starting Deployment ==="
             cd /home/ubuntu/hng12-stage2-fastapi-book-project
-            git fetch --all
+            git pull origin main --rebase
             git reset --hard origin/main
             python3 -m venv venv
             source venv/bin/activate
             pip install --upgrade pip
             pip install -r requirements.txt
-            sudo systemctl daemon-reload
-            sudo systemctl restart fastapi.service
-            echo "=== Deployment Successful ==="
+             echo "=== Restarting FastAPI Service ==="
+  sudo systemctl daemon-reload
+  sudo systemctl restart fastapi.service
+  sudo systemctl status fastapi.service --no-pager
+  echo "=== Deployment Successful ==="
