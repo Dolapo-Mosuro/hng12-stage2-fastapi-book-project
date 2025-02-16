@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.router import api_router
 from core.config import settings
 
+
 app = FastAPI()
 
 app.add_middleware(
