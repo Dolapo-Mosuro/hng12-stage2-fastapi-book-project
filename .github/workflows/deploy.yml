@@ -1,19 +1,35 @@
-name: CD Pipeline
+name: deploy
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH into server & deploy
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      # Deploy to server
+      - name: Deploy to Server
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ secrets.AWS_SSH_HOST }}  # Critical!
+          host: ${{ secrets.AWS_SSH_HOST }}
           username: ${{ secrets.AWS_SSH_USER }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
+            set -e
+            echo "=== Starting Deployment ==="
             cd /home/ubuntu/hng12-stage2-fastapi-book-project
-            git pull origin main
+            git fetch --all
+            git reset --hard origin/main
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install --upgrade pip
             pip install -r requirements.txt
+            sudo systemctl daemon-reload
             sudo systemctl restart fastapi.service
+            echo "=== Deployment Successful ==="
